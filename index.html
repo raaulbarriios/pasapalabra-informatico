@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎃 Pasapalabra Informático - Edición Halloween 👻</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Telarañas decorativas de Halloween en esquinas -->
+  <svg class="spider-web web-top-left" viewBox="0 0 100 100" fill="none" stroke="#a855f7" stroke-width="1.2">
+    <path d="M0 0 L100 0 M0 0 L0 100 M0 0 L100 100 M0 0 L100 50 M0 0 L50 100" />
+    <path d="M30 0 Q 30 30 0 30" />
+    <path d="M55 0 Q 55 55 0 55" />
+    <path d="M80 0 Q 80 80 0 80" />
+  </svg>
+  <svg class="spider-web web-top-right" viewBox="0 0 100 100" fill="none" stroke="#a855f7" stroke-width="1.2">
+    <path d="M0 0 L100 0 M0 0 L0 100 M0 0 L100 100 M0 0 L100 50 M0 0 L50 100" />
+    <path d="M30 0 Q 30 30 0 30" />
+    <path d="M55 0 Q 55 55 0 55" />
+    <path d="M80 0 Q 80 80 0 80" />
+  </svg>
+
+  <!-- Murciélagos animados de fondo -->
+  <div class="bat-ambient bat-1">🦇</div>
+  <div class="bat-ambient bat-2">🦇</div>
+  <div class="bat-ambient bat-3">🦇</div>
+
+  <!-- Cabecera global -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🎃</div>
+      <div>
+        <h1 class="brand-title">Pasapalabra IT</h1>
+      </div>
+      <span class="brand-badge">Halloween Edition 👻</span>
+    </div>
+    <div class="top-controls">
+      <button id="menuBtn" class="btn-secondary" title="Volver al Menú Principal">
+        🏠 <span class="btn-text">Menú</span>
+      </button>
+      <button id="rankingBtn" class="btn-secondary" title="Ver Tabla de Líderes">
+        🏆 <span class="btn-text">Ranking</span>
+      </button>
+      <button id="soundBtn" class="btn-icon" title="Silenciar / Activar sonido" aria-label="Control de sonido">🔊</button>
+      <button id="pauseBtn" class="btn-secondary" title="Pausar partida" style="display: none;">
+        ⏸ <span class="btn-text">Pausar</span>
+      </button>
+      <button id="restartBtn" class="btn-secondary" title="Reiniciar con nuevas palabras" style="display: none;">
+        🔄 <span class="btn-text">Reiniciar</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- VISTA 1: MENÚ DE INICIO / ELECCIÓN          -->
+  <!-- ========================================== -->
+  <section id="homeView" class="view-section home-container">
+    <div class="home-hero">
+      <h2 class="home-title">🎃 Pasapalabra Informático 👻</h2>
+      <p class="home-subtitle">
+        Desafío técnico interactivo de nivel intermedio: redes, arquitectura de software, bases de datos, Linux y seguridad.
+      </p>
+
+      <!-- Tarjeta de Identificación de Jugador y Curso -->
+      <div class="player-input-card">
+        <div class="player-fields-row">
+          <div class="field-group">
+            <label for="playerNameInput" class="player-input-label">
+              🧟 Tu Nombre (obligatorio):
+            </label>
+            <input 
+              type="text" 
+              id="playerNameInput" 
+              class="player-name-input" 
+              placeholder="Escribe tu nombre o alias aquí..." 
+              maxlength="20"
+              autocomplete="name"
+              required
+            >
+          </div>
+          <div class="field-group field-group-course">
+            <label for="playerCourseSelect" class="player-input-label">
+              🎓 Curso:
+            </label>
+            <select id="playerCourseSelect" class="player-course-select">
+              <option value="1º SMR">1º SMR</option>
+              <option value="1º ASIR">1º ASIR</option>
+              <option value="2º ASIR">2º ASIR</option>
+              <option value="Profesores">Profesores</option>
+            </select>
+          </div>
+        </div>
+        <div id="nameValidationMsg" class="name-validation-msg" aria-live="polite"></div>
+      </div>
+
+      <!-- Tarjetas de Acción: Empezar o Ver Ranking -->
+      <div class="home-cards-grid">
+        <div class="home-action-card" id="cardStartGame">
+          <div class="home-action-icon">🎮</div>
+          <h3 class="home-action-title">Empezar el Juego</h3>
+          <p class="home-action-desc">
+            Comienza una partida con 27 letras aleatorias de informática. Dispones de 300 segundos para completar el rosco.
+          </p>
+          <button id="startGameBtn" class="btn btn-primary">
+            🎃 Jugar Ahora
+          </button>
+        </div>
+
+        <div class="home-action-card" id="cardViewScores">
+          <div class="home-action-icon">🏆</div>
+          <h3 class="home-action-title">Ver Puntuaciones</h3>
+          <p class="home-action-desc">
+            Consulta el Salón del Terror con los récords registrados por todos los jugadores en el ranking online.
+          </p>
+          <button id="viewScoresBtn" class="btn btn-secondary" style="width: 100%;">
+            📜 Consultar Ranking
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- VISTA 2: TABLERO DE JUEGO (EL ROSCO)       -->
+  <!-- ========================================== -->
+  <section id="gameView" class="view-section game-container hidden">
+    
+    <!-- Marcador -->
+    <div class="scoreboard" aria-label="Marcador de la partida">
+      <div class="score-card score-correct">
+        <span class="score-label">🍬 Aciertos</span>
+        <span id="scoreCorrect" class="score-val">0</span>
+      </div>
+      <div class="score-card score-incorrect">
+        <span class="score-label">💀 Fallos</span>
+        <span id="scoreIncorrect" class="score-val">0</span>
+      </div>
+      <div class="score-card score-pending">
+        <span class="score-label">🕸️ Pendientes</span>
+        <span id="scorePending" class="score-val">27</span>
+      </div>
+    </div>
+
+    <!-- El Rosco -->
+    <div class="rosco-wrapper" aria-label="Rosco de letras">
+      <div id="roscoCircle" class="rosco-circle"></div>
+
+      <!-- Centro interactivo con la pista y el temporizador -->
+      <div class="rosco-center">
+        <div class="timer-box" title="Tiempo restante">
+          <span style="font-size: 1.2rem;">⏱️</span>
+          <span id="timerNum" class="timer-num">300</span>
+        </div>
+
+        <div id="clueIndicator" class="clue-indicator">Empieza por A</div>
+        <div id="clueText" class="clue-text">Cargando definición embrujada...</div>
+        <div id="feedbackMsg" class="feedback-msg" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <!-- Panel de interacción / Entrada de respuestas -->
+    <div class="interaction-panel">
+      <form id="answerForm" class="answer-form" autocomplete="off" onsubmit="return false;">
+        <input 
+          type="text" 
+          id="answerInput" 
+          class="answer-input" 
+          placeholder="Escribe el concepto informático..." 
+          autocomplete="off" 
+          autocorrect="off" 
+          autocapitalize="off" 
+          spellcheck="false"
+          enterkeyhint="send"
+          inputmode="text"
+        >
+        <button type="submit" id="submitBtn" class="btn btn-primary">
+          Enviar ↵
+        </button>
+        <button type="button" id="passBtn" class="btn btn-pass">
+          Pasapalabra ⤳
+        </button>
+      </form>
+
+      <div class="action-bar">
+        <div class="shortcuts-hint">
+          Atajos: <kbd>Enter</kbd> Enviar | <kbd>Espacio (vacío)</kbd> Pasapalabra | <kbd>Esc</kbd> Pausar
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Modal de Fin de Partida / Soluciones -->
+  <div id="gameOverModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="gameOverTitle" class="modal-title">Partida Finalizada</h2>
+      </div>
+      <div class="modal-body">
+        
+        <div class="stats-grid">
+          <div class="stat-box" style="border-color: rgba(34, 197, 94, 0.5);">
+            <span id="statCorrect" class="num" style="color: #4ade80;">0</span>
+            <span class="desc">Aciertos</span>
+          </div>
+          <div class="stat-box" style="border-color: rgba(239, 68, 68, 0.5);">
+            <span id="statIncorrect" class="num" style="color: #f87171;">0</span>
+            <span class="desc">Fallos</span>
+          </div>
+          <div class="stat-box" style="border-color: rgba(168, 85, 247, 0.5);">
+            <span id="statPending" class="num" style="color: #c084fc;">0</span>
+            <span class="desc">Sin responder</span>
+          </div>
+          <div class="stat-box">
+            <span id="statTime" class="num" style="color: var(--pumpkin-orange);">0s</span>
+            <span class="desc">Tiempo</span>
+          </div>
+        </div>
+
+        <div id="saveScoreNotice" style="text-align: center; font-size: 0.9rem; color: #4ade80; font-weight: 700; margin: 8px 0;"></div>
+
+        <h3 style="font-size: 1rem; color: #ffedd5; margin-top: 14px; margin-bottom: 8px;">
+          Revisión de respuestas del Rosco:
+        </h3>
+        
+        <div id="reviewList" class="review-list"></div>
+
+      </div>
+      <div class="modal-footer" style="flex-wrap: wrap;">
+        <button id="backToMenuFromGameOverBtn" class="btn btn-secondary">
+          🏠 Menú Principal
+        </button>
+        <button id="viewRankingFromGameOverBtn" class="btn btn-secondary">
+          🏆 Ver Ranking
+        </button>
+        <button id="playAgainBtn" class="btn btn-primary" style="flex: 1;">
+          🎃 Jugar de Nuevo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Tabla de Líderes (Ranking General) -->
+  <div id="rankingModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h2 class="modal-title">🏆 Salón del Terror · Puntuaciones</h2>
+        <button id="closeRankingBtn" class="btn-icon" style="font-size: 16px;" title="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 12px;">
+          Puntuaciones sincronizadas online. Los jugadores se clasifican por número de aciertos y menor tiempo empleado.
+        </p>
+
+        <div class="ranking-table-wrapper">
+          <table class="ranking-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Jugador</th>
+                <th>Curso</th>
+                <th>Aciertos</th>
+                <th>Fallos</th>
+                <th>Tiempo</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="rankingTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 20px;">Cargando puntuaciones...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="refreshRankingBtn" class="btn btn-secondary">
+          🔄 Actualizar
+        </button>
+        <button id="playFromRankingBtn" class="btn btn-primary">
+          🎃 Jugar Partida
+        </button>
+        <button id="closeRankingFooterBtn" class="btn btn-secondary">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="questions.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
