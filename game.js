@@ -153,7 +153,7 @@
   const refreshRankingBtn = document.getElementById("refreshRankingBtn");
   const playFromRankingBtn = document.getElementById("playFromRankingBtn");
 
-  // Cargar nombre y curso recordados del jugador (sin valores anónimos por defecto)
+  // Cargar nombre y curso recordados del jugador
   try {
     const savedName = localStorage.getItem("pasapalabra_player_name");
     if (savedName && savedName.toLowerCase() !== "anonimo" && playerNameInput) {
@@ -171,6 +171,15 @@
   if (playerNameInput) {
     playerNameInput.addEventListener("input", () => {
       playerNameInput.classList.remove("input-error");
+      if (nameValidationMsg) {
+        nameValidationMsg.textContent = "";
+      }
+    });
+  }
+
+  if (playerCourseSelect) {
+    playerCourseSelect.addEventListener("change", () => {
+      playerCourseSelect.classList.remove("input-error");
       if (nameValidationMsg) {
         nameValidationMsg.textContent = "";
       }
@@ -196,6 +205,10 @@
     initAudio();
 
     const nameVal = playerNameInput ? playerNameInput.value.trim() : "";
+    const courseVal = playerCourseSelect ? playerCourseSelect.value.trim() : "";
+
+    let hasError = false;
+
     if (!nameVal || nameVal.toLowerCase() === "anonimo") {
       if (playerNameInput) {
         playerNameInput.classList.add("input-error");
@@ -204,23 +217,37 @@
       if (nameValidationMsg) {
         nameValidationMsg.textContent = "⚠️ Debes escribir tu nombre o alias para poder jugar.";
       }
-      return;
+      hasError = true;
+    } else if (playerNameInput) {
+      playerNameInput.classList.remove("input-error");
     }
+
+    if (!courseVal) {
+      if (playerCourseSelect) {
+        playerCourseSelect.classList.add("input-error");
+        if (!hasError) playerCourseSelect.focus();
+      }
+      if (nameValidationMsg) {
+        nameValidationMsg.textContent = hasError 
+          ? "⚠️ Debes escribir tu nombre y seleccionar un curso para comenzar."
+          : "⚠️ Debes seleccionar un curso (o Profesores) para poder jugar.";
+      }
+      hasError = true;
+    } else if (playerCourseSelect) {
+      playerCourseSelect.classList.remove("input-error");
+    }
+
+    if (hasError) return;
 
     if (nameValidationMsg) nameValidationMsg.textContent = "";
-    if (playerNameInput) playerNameInput.classList.remove("input-error");
 
     currentPlayerName = nameVal;
+    currentPlayerCourse = courseVal;
+
     try {
       localStorage.setItem("pasapalabra_player_name", currentPlayerName);
+      localStorage.setItem("pasapalabra_player_course", currentPlayerCourse);
     } catch (e) {}
-
-    if (playerCourseSelect) {
-      currentPlayerCourse = playerCourseSelect.value || "1º SMR";
-      try {
-        localStorage.setItem("pasapalabra_player_course", currentPlayerCourse);
-      } catch (e) {}
-    }
 
     homeView.classList.add("hidden");
     rankingModal.classList.remove("active");
@@ -795,19 +822,6 @@
   });
 
   playFromRankingBtn.addEventListener("click", () => {
-    const nameVal = playerNameInput ? playerNameInput.value.trim() : "";
-    if (!nameVal || nameVal.toLowerCase() === "anonimo") {
-      rankingModal.classList.remove("active");
-      showHomeView();
-      if (playerNameInput) {
-        playerNameInput.classList.add("input-error");
-        playerNameInput.focus();
-      }
-      if (nameValidationMsg) {
-        nameValidationMsg.textContent = "⚠️ Debes escribir tu nombre antes de comenzar a jugar.";
-      }
-      return;
-    }
     rankingModal.classList.remove("active");
     launchGameFromMenu();
   });

@@ -670,7 +670,8 @@ header {
   box-shadow: 0 0 10px var(--pumpkin-glow);
 }
 
-.player-name-input.input-error {
+.player-name-input.input-error,
+.player-course-select.input-error {
   border-color: #ef4444 !important;
   box-shadow: 0 0 12px rgba(239, 68, 68, 0.6) !important;
   animation: shake-name 0.3s ease;
