@@ -1289,3 +1289,28 @@ header {
   font-size: 0.9rem;
 }
 
+/* Crédito discreto del autor */
+.app-credit {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #a78bfa;
+  opacity: 0.55;
+  letter-spacing: 0.5px;
+  user-select: none;
+  transition: opacity 0.2s ease;
+}
+
+.app-credit:hover {
+  opacity: 0.9;
+}
+
+.modal-credit-subtle {
+  text-align: center;
+  padding: 6px 16px 10px;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  opacity: 0.5;
+  user-select: none;
+}
+
